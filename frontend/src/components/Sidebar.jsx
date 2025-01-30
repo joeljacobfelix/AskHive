@@ -1,38 +1,53 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ChevronLeft,
-  ChevronRight,
-  Menu,
   Person,
   ReorderOutlined,
   ChatBubbleOutline,
-  VpnKey,
-  Settings,
-  AccountCircle
+  Settings
 } from '@mui/icons-material';
+import Logout from './Logout';
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
-  const [isHovered, setIsHovered] = useState(false);
+const Sidebar = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const handleMouseEnter = () => setIsHovered(true);
-  const handleMouseLeave = () => setIsHovered(false);
+  const handleMouseEnter = () => {
+    setIsSidebarOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsSidebarOpen(false);
+  };
 
   const sidebarStyle = {
-    width: isOpen ? '250px' : isHovered ? 'auto' : '50px',
+    width: isSidebarOpen ? '200px' : '60px',
     height: '100vh',
-    transition: 'width 0.3s',
-    backgroundColor: '#f4f4f4',
-    overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: '#f4f4f4',
+    overflow: 'hidden',
+    borderRight: '1px solid #ddd',
+    position: 'fixed',
+    zIndex: 1,
+    transition: 'width 0.3s ease',
+  };
+
+  const menuItemStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: isSidebarOpen ? 'flex-start' : 'center',
+    width: '100%',
+    padding: '10px',
+    cursor: 'pointer',
+    textDecoration: 'none',
+    color: 'inherit',
   };
 
   const menuItems = [
     { icon: <Person />, text: 'Profile', path: '/profile' },
     { icon: <ReorderOutlined />, text: 'Questions', path: '/questions' },
     { icon: <ChatBubbleOutline />, text: 'Messages', path: '/messages' },
-    { icon: <VpnKey />, text: 'Outpass', path: '/outpass' },
     { icon: <Settings />, text: 'Settings', path: '/settings' },
   ];
 
@@ -42,21 +57,21 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {isOpen ? (
-        <ChevronLeft onClick={toggleSidebar} style={{ cursor: 'pointer', margin: '10px' }} />
-      ) : isHovered ? (
-        <ChevronRight onClick={toggleSidebar} style={{ cursor: 'pointer', margin: '10px' }} />
-      ) : (
-        <Menu onClick={toggleSidebar} style={{ cursor: 'pointer', margin: '10px' }} />
+      <div style={{ marginTop: '20px', width: '100%' }}>
+        {menuItems.map((item, index) => (
+          <Link to={item.path} key={index} style={menuItemStyle}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {item.icon}
+              {isSidebarOpen && <span style={{ marginLeft: '10px' }}>{item.text}</span>}
+            </div>
+          </Link>
+        ))}
+      </div>
+      {isSidebarOpen && (
+        <div style={{ marginTop: '20px', width: '100%', textAlign: 'center' }}>
+          <Logout />
+        </div>
       )}
-      {menuItems.map((item, index) => (
-        <Link to={item.path} key={index} style={{ textDecoration: 'none', color: 'inherit' }}>
-          <div style={{ display: 'flex', alignItems: 'center', padding: '10px', cursor: 'pointer' }}>
-            {item.icon}
-            {isOpen && <span style={{ marginLeft: '10px' }}>{item.text}</span>}
-          </div>
-        </Link>
-      ))}
     </div>
   );
 };
